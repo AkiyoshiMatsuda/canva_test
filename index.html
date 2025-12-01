@@ -2,53 +2,47 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Layer Control Sample</title>
+  <title>Fabric.js レイヤー操作サンプル</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div>
-    <button onclick="addText()">テキスト追加</button><br>
-    <label>文字色: <input type="color" id="textColor" onchange="changeTextColor()"></label>
-    <button onclick="addImage()">画像追加</button><br>
-    <label>透明度:
-    <input type="range" id="opacitySlider" min="0" max="1" step="0.01"
-            value="1" oninput="changeOpacity()">
-    </label>
-    <button onclick="addRect()">四角追加</button>
-    <button onclick="addTriangle()">三角形追加</button><br>
-    <button onclick="addCircle()">丸追加</button>
-    <label>図形色:
-      <input type="color" id="shapeColor" onchange="changeShapeColor()">
-    </label>
-    <hr>
-    <label>回転角度:
-    <input type="range" id="rotateSlider" min="0" max="360" step="1" value="0" oninput="changeRotation()">
-    </label>
-    <hr>
-    <button onclick="deleteObj()">削除</button><br>
-    <hr>
-    <button onclick="bringToFront()">最前面へ</button>
-    <button onclick="bringForward()">一段前へ</button>
-    <button onclick="sendBackward()">一段後ろへ</button>
-    <button onclick="sendToBack()">最背面へ</button>
-    <hr>
+  <div id="controls-panel">
+    <button onclick="window.addText()">テキスト追加</button>
+    <button onclick="window.addRect()">四角追加</button>
+    <button onclick="window.addTriangle()">三角形追加</button>
+    <button onclick="window.addCircle()">丸追加</button>
+    <button onclick="window.addImage()">画像追加</button><br><br>
+
+    <label>文字色: <input type="color" id="textColor" onchange="window.changeTextColor()"></label>
+    <label>図形色: <input type="color" id="shapeColor" onchange="window.changeShapeColor()"></label><br>
+    <label>透明度: <input type="range" id="opacitySlider" min="0" max="1" step="0.01" value="1" oninput="window.changeOpacity()"></label><br>
+    <label>回転角度: <input type="range" id="rotateSlider" min="0" max="360" step="1" value="0" oninput="window.changeRotation()"></label><br>
+
+    <button onclick="window.deleteObj()">削除</button>
+    <button onclick="window.undo()">Undo</button>
+    <button onclick="window.redo()">Redo</button><br><br>
+
+    <button onclick="window.bringToFront()">最前面へ</button>
+    <button onclick="window.bringForward()">一段前へ</button>
+    <button onclick="window.sendBackward()">一段後ろへ</button>
+    <button onclick="window.sendToBack()">最背面へ</button><br><br>
+
     <strong>アスペクト比変更</strong><br>
-    <select id="aspectPreset" onchange="applyAspectPreset()">
+    <select id="aspectPreset" onchange="window.applyAspectPreset()">
       <option value="">選択してください</option>
       <option value="1:1">1:1（正方形）</option>
       <option value="4:3">4:3</option>
       <option value="16:9">16:9</option>
       <option value="9:16">9:16（スマホ縦）</option>
     </select>
-
     <div>
       <label>幅: <input type="number" id="customWidth" value="600" style="width:70px"></label>
       <label>高さ: <input type="number" id="customHeight" value="400" style="width:70px"></label>
-      <button onclick="applyCustomAspect()">適用</button>
-    </div>
-    <hr>
+      <button onclick="window.applyCustomAspect()">適用</button>
+    </div><br>
+
     <input type="file" id="fileInput" style="display:none" accept="image/*">
-    <button onclick="exportImage()">PNGとして保存</button>
+    <button onclick="window.exportImage()">PNGとして保存</button>
   </div>
 
   <div id="canvas-container">
@@ -59,7 +53,6 @@
     <strong>レイヤー</strong>
     <div id="layers"></div>
   </div>
-
 
   <script src="https://cdn.jsdelivr.net/npm/fabric@5.2.4/dist/fabric.min.js"></script>
   <script src="script.js"></script>
