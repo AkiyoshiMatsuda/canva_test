@@ -68,7 +68,7 @@ window.canvas.on("object:modified", function () {
 // ------------------------------
 // オブジェクト追加
 // ------------------------------
-function addText() {
+window.addText = function () {
   const text = new fabric.Textbox("Sample Text", {
     left: 100,
     top: 100,
@@ -80,11 +80,11 @@ function addText() {
 
   window.canvas.add(text);
   saveHistory();
-}
+};
 
-function addImage() {
+window.addImage = function () {
   document.getElementById("fileInput").click();
-}
+};
 
 document.getElementById("fileInput").addEventListener("change", function (e) {
   const reader = new FileReader();
@@ -103,7 +103,7 @@ document.getElementById("fileInput").addEventListener("change", function (e) {
   reader.readAsDataURL(e.target.files[0]);
 });
 
-function addRect() {
+window.addRect = function () {
   window.canvas.add(new fabric.Rect({
     left: 100, top: 100,
     width: 120, height: 80,
@@ -111,9 +111,9 @@ function addRect() {
     originX: 'center', originY: 'center'
   }));
   saveHistory();
-}
+};
 
-function addTriangle() {
+window.addTriangle = function () {
   window.canvas.add(new fabric.Triangle({
     left: 200, top: 150,
     width: 120, height: 100,
@@ -121,93 +121,117 @@ function addTriangle() {
     originX: 'center', originY: 'center'
   }));
   saveHistory();
-}
+};
 
-function addCircle() {
+window.addCircle = function () {
   window.canvas.add(new fabric.Circle({
     left: 100, top: 100,
     radius: 50, fill: 'coral',
     originX: 'center', originY: 'center'
   }));
   saveHistory();
-}
+};
 
 // ------------------------------
 // 色・透明度・回転
 // ------------------------------
-function changeShapeColor() {
+window.changeShapeColor = function () {
   const obj = window.canvas.getActiveObject();
   if (!obj) return;
 
-  obj.set("fill", document.getElementById("shapeColor").value);
-  window.canvas.renderAll();
-  saveHistory();
-}
+  const shapeTypes = ["rect", "circle", "triangle", "polygon", "ellipse"];
+  if (shapeTypes.includes(obj.type)) {
+    obj.set("fill", document.getElementById("shapeColor").value);
+    window.canvas.requestRenderAll();
+  }
+};
 
-function changeTextColor() {
+window.changeTextColor = function () {
   const obj = window.canvas.getActiveObject();
   if (!obj || obj.type !== "textbox") return;
-
   obj.set("fill", document.getElementById("textColor").value);
-  window.canvas.renderAll();
-  saveHistory();
-}
+  window.canvas.requestRenderAll();
+};
 
-function changeOpacity() {
+window.changeOpacity = function () {
   const obj = window.canvas.getActiveObject();
   if (!obj) return;
-
   obj.set("opacity", document.getElementById("opacitySlider").value);
-  window.canvas.renderAll();
-}
+  window.canvas.requestRenderAll();
+};
 
-function changeRotation() {
+window.changeRotation = function () {
   const obj = window.canvas.getActiveObject();
   if (!obj) return;
-
-  obj.set("angle", Number(document.getElementById("rotateSlider").value));
-  window.canvas.renderAll();
-}
+  const angle = Number(document.getElementById("rotateSlider").value);
+  obj.set("angle", angle);
+  window.canvas.requestRenderAll();
+};
 
 // ------------------------------
 // 削除
 // ------------------------------
-function deleteObj() {
+window.deleteObj = function () {
   const obj = window.canvas.getActiveObject();
   if (!obj) return;
-
   window.canvas.remove(obj);
-  updateLayerList();
   saveHistory();
-}
+  updateLayerList();
+};
 
 // ------------------------------
-// レイヤー管理
+// レイヤー操作
 // ------------------------------
-function updateLayerList() {
+function getActive() { return window.canvas.getActiveObject(); }
+
+window.bringToFront = function () {
+  const obj = getActive();
+  if (obj) obj.bringToFront();
+  window.canvas.renderAll();
+  saveHistory();
+};
+
+window.bringForward = function () {
+  const obj = getActive();
+  if (obj) window.canvas.bringForward(obj);
+  window.canvas.renderAll();
+  saveHistory();
+};
+
+window.sendBackward = function () {
+  const obj = getActive();
+  if (obj) window.canvas.sendBackwards(obj);
+  window.canvas.renderAll();
+  saveHistory();
+};
+
+window.sendToBack = function () {
+  const obj = getActive();
+  if (obj) obj.sendToBack();
+  window.canvas.renderAll();
+  saveHistory();
+};
+
+// ------------------------------
+// レイヤー一覧（必要ならここにあなたの既存コードを）
+// ------------------------------
+window.updateLayerList = function () {
   const container = document.getElementById("layers");
   container.innerHTML = "";
 
-  const objects = window.canvas.getObjects().slice().reverse();
-
-  objects.forEach((obj) => {
+  window.canvas.getObjects().forEach((obj, index) => {
     const div = document.createElement("div");
-    div.className = "layer-item";
-
-    let label = "オブジェクト";
-    if (obj.type === "rect") label = "四角形";
-    if (obj.type === "circle") label = "丸";
-    if (obj.type === "textbox") label = "テキスト";
-    if (obj.type === "triangle") label = "三角形";
-
-    div.textContent = label;
-
-    div.onclick = () => {
-      window.canvas.setActiveObject(obj);
-      window.canvas.renderAll();
-      updateLayerList();
-    };
-
+    div.textContent = `${index}: ${obj.type}`;
     container.appendChild(div);
   });
-}
+};
+
+// ------------------------------
+// PNG 保存
+// ------------------------------
+window.exportImage = function () {
+  const link = document.createElement('a');
+  link.href = window.canvas.toDataURL({ format: "png" });
+  link.download = "canvas.png";
+  link.click();
+};
