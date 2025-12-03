@@ -1,3 +1,18 @@
 body { display: flex; gap: 20px; padding: 20px; font-family: sans-serif; }
     #canvas-container { border: 1px solid #ccc; }
     button { padding: 6px 10px; margin: 3px 0; cursor: pointer; }
+
+#layers > div {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#layers > div:hover {
+  background: #f0f0f0;
+}
